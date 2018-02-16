@@ -1,23 +1,24 @@
 #rpmdesc
-Tool to get information about rpm packet by name
+Tool to get information about rpm packet by name (os and architecture are optional)
 
 ##Description
 With this tool you can get information about files inside the rpm package by name.
-This tool uses https://rpmfind.net to get information about packet.
+This tool uses [rpmfind](https://rpmfind.net) to get information about packet.
+It's just a web scrapper for rpmfind.net
 
 ##What kind of information can i get?
-rpmdesc gives you full package name, homepage and list of files in packet (most important feature).
+__rpmdesc__ tool gives you full package name, homepage and list of files in packet (most important feature).
 
 ##Usage
-Use:
-_rpmdesc -name packagename_
-or
-_rpmdesc -name part_of_packagename_
 
-For example:
-_rpmdesc -name cron_
+rpmdesc [global options] command [command options] [arguments...]
 
-Also, you can start tool without any arguments and input name after greeting.
+####Commands:
+     help, h  Shows a list of commands or help for one command
 
-You can use -arch option to input custom architecture. By default tool gives you first architecture from the result result.
-But be sure that you input full architecture name. Use
+####Global options:
+   --name value   name of rpm packet
+   --os value     OS of rpm packet
+   --arch value   architecture of rpm packet
+   --help, -h     show help
+   --version, -v  print the version

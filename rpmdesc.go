@@ -13,12 +13,18 @@ import (
 func main() {
 	rpmName := ""
 	arch :=""
+	os_arg:=""
 	app := cli.NewApp()
 	app.Flags = []cli.Flag {
 		cli.StringFlag{
 			Name: "name",
 			Value: "",
 			Usage: "name of rpm packet",
+		},
+		cli.StringFlag{
+			Name: "os",
+			Value: "",
+			Usage: "OS of rpm packet",
 		},
 		cli.StringFlag{
 			Name: "arch",
@@ -34,12 +40,14 @@ func main() {
 			rpmName = c.String("name")
 		}
 		arch = c.String("arch")
+		os_arg = c.String("os")
+
 		return nil
 	}
 
 	app.Run(os.Args)
 
-	res := getSearchUrl(rpmName, arch)
+	res := getSearchUrl(rpmName, os_arg, arch)
 	descUrl := getDescUrl(res)
 	if len(descUrl) == 0{
 		log.Fatal("No rpm's found")
@@ -60,10 +68,10 @@ func main() {
 	fmt.Printf("%s\n", result)
 }
 
-func getSearchUrl(rpmnName, arch string) string {
-	urlPart1 := "https://rpmfind.net/linux/rpm2html/search.php?query="
-	urlPart2 := rpmnName + "&submit=Search+...&system=&arch=" + arch
-	return urlPart1 + urlPart2
+func getSearchUrl(rpmnName, os_arg, arch string) string {
+	url := "https://rpmfind.net/linux/rpm2html/search.php?query=%s&submit=Search+...&system=%s&arch=%s"
+	req := fmt.Sprintf(url, rpmnName, os_arg, arch)
+	return req
 }
 
 func enterName() string {
