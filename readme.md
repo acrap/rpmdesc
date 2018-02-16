@@ -18,7 +18,11 @@ rpmdesc [global options] command [command options] [arguments...]
 
 #### Global options:
    --name value   name of rpm packet
+   
    --os value     OS of rpm packet
+   
    --arch value   architecture of rpm packet
+   
    --help, -h     show help
+   
    --version, -v  print the version
