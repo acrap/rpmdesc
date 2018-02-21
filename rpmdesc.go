@@ -62,10 +62,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	result := getObjectsFromRpm(doc)
 	getHomepage(doc)
 
-	fmt.Printf("%s\n", result)
+	fmt.Println(getObjectsFromRpm(doc))
+	fmt.Println("License: ", getLicenseFromRpm(doc))
 }
 
 func getSearchUrl(rpmnName, os_arg, arch string) string {
@@ -107,17 +107,24 @@ func getDescUrl(url string) string {
 	return result
 }
 
-func getObjectsFromRpm(doc *goquery.Document) string {
-	result:=""
+func getTextByCategory(doc *goquery.Document, category string) string {
+	result := ""
 	doc.Find("h3").Each(func(_ int, selection *goquery.Selection) {
-		text:=selection.Text()
-		if strings.Contains(text,"Files"){
+		text := selection.Text()
+		if strings.Contains(text, category) {
 			result = selection.Next().Text()
 			return
 		}
 	})
-
 	return result
+}
+
+func getLicenseFromRpm(doc *goquery.Document) string {
+	return getTextByCategory(doc, "License")
+}
+
+func getObjectsFromRpm(doc *goquery.Document) string {
+	return getTextByCategory(doc, "Files")
 }
 
 func getHomepage(doc *goquery.Document) {
