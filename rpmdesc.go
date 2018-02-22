@@ -17,6 +17,8 @@ func main() {
 	var licenseOutput, homepageOutput, noFoundPacketName, noFileListOutput bool
 
 	app := cli.NewApp()
+	app.Version = "0.1"
+	app.Description = "rpmdesc is a tool that gives you full package name, homepage and list of files in RPM packet"
 	app.Flags = []cli.Flag {
 		cli.BoolFlag{
 			Name: "nofilelist",
@@ -70,6 +72,11 @@ func main() {
 	}
 
 	app.Run(os.Args)
+
+	if len(rpmName) == 0 {
+		// no rpm name specified
+		return
+	}
 
 	res := getSearchUrl(rpmName, os_arg, arch)
 	descUrl := getDescUrl(res)
