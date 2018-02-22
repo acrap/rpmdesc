@@ -14,8 +14,29 @@ func main() {
 	rpmName := ""
 	arch :=""
 	os_arg:=""
+	var licenseOutput, homepageOutput, noFoundPacketName, noFileListOutput bool
+
 	app := cli.NewApp()
 	app.Flags = []cli.Flag {
+		cli.BoolFlag{
+			Name: "nofilelist",
+			Usage:"remove file list from the output",
+		},
+
+		cli.BoolFlag{
+			Name: "nopname",
+			Usage:"remove picked packet name from the output",
+		},
+		cli.BoolFlag{
+			Name: "license",
+			Usage:"add license info to output",
+		},
+
+		cli.BoolFlag{
+			Name: "homepage",
+			Usage:"add homepage info to output",
+		},
+
 		cli.StringFlag{
 			Name: "name",
 			Value: "",
@@ -41,7 +62,10 @@ func main() {
 		}
 		arch = c.String("arch")
 		os_arg = c.String("os")
-
+		licenseOutput = c.Bool("license")
+		homepageOutput = c.Bool("homepage")
+		noFoundPacketName = c.Bool("nopname")
+		noFileListOutput = c.Bool("nofilelist")
 		return nil
 	}
 
@@ -53,8 +77,11 @@ func main() {
 		log.Fatal("No rpm's found")
 		return
 	}
-	fmt.Println("Found packet:", descUrl[strings.LastIndex(descUrl,"/")+1:
-		strings.LastIndex(descUrl,".")])
+
+	if !noFileListOutput {
+		fmt.Println("Found packet:", descUrl[strings.LastIndex(descUrl,"/")+1:
+			strings.LastIndex(descUrl,".")])
+	}
 
 	doc, err := goquery.NewDocument("https://rpmfind.net/" + descUrl)
 
@@ -62,10 +89,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	getHomepage(doc)
+	if homepageOutput {
+		fmt.Println(getHomepage(doc))
+	}
 
-	fmt.Println(getObjectsFromRpm(doc))
-	fmt.Println("License: ", getLicenseFromRpm(doc))
+	if !noFileListOutput{
+		fmt.Println(getObjectsFromRpm(doc))
+	}
+
+	if licenseOutput{
+		fmt.Print("License: ", getLicenseFromRpm(doc))
+	}
+
 }
 
 func getSearchUrl(rpmnName, os_arg, arch string) string {
@@ -127,11 +162,14 @@ func getObjectsFromRpm(doc *goquery.Document) string {
 	return getTextByCategory(doc, "Files")
 }
 
-func getHomepage(doc *goquery.Document) {
-	doc.Find("td").Each(func(_ int, selection *goquery.Selection) {
+func getHomepage(doc *goquery.Document) string{
+	result := ""
+		doc.Find("td").Each(func(_ int, selection *goquery.Selection) {
 		text := selection.Text()
 		if strings.HasPrefix(text, "Url"){
-			fmt.Println(text[strings.Index(text, "htt"):],"")
+			result = text[strings.Index(text, "htt"):]
+
 		}
 	})
+	return result
 }
