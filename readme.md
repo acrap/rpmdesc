@@ -6,23 +6,44 @@ With this tool you can get information about files inside the rpm package by nam
 This tool uses [rpmfind](https://rpmfind.net) to get information about packet.
 It's just a web scrapper for rpmfind.net
 
+## Dependencies 
+
+[goquery](https://www.github.com/PuerkitoBio/goquery)
+
+[urvafe/cli](https://www.github.com/urfave/cli)
+
 ## What kind of information can i get?
 __rpmdesc__ tool gives you full package name, homepage and list of files in packet (most important feature).
 
-## Usage
+# Usage 
 
-rpmdesc [global options] command [command options] [arguments...]
+### Usage:
+   rpmdesc [global options] command [command options] [arguments...]
 
-#### Commands:
+### Version:
+   0.1
+
+### Description:
+   rpmdesc is a tool that gives you full package name, homepage and list of files in RPM packet
+
+### commands:
      help, h  Shows a list of commands or help for one command
 
-#### Global options:
-   --name value   name of rpm packet
+### Global options:
+   _--nofilelist_   remove file list from the output
    
-   --os value     OS of rpm packet
+   _--nopname_      remove picked packet name from the output
    
-   --arch value   architecture of rpm packet
+   _--license_      add license info to output
    
-   --help, -h     show help
+   _--homepage_     add homepage info to output
+   
+   _--name value_   name of rpm packet
+   
+   _--os value_     OS of rpm packet
+   
+   _--arch value_   architecture of rpm packet
+   
+   _--help, -h_     show help
    
    --version, -v  print the version
