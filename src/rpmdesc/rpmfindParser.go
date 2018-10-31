@@ -8,13 +8,23 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func GetSearchUrl(rpmnName, os_arg, arch string) string {
+// RpmFind is a parser for rpmfind.net
+type RpmFind struct{}
+
+// GetSearchUrl create full search url
+func (parser RpmFind) GetSearchUrl(rpmnName, os_arg, arch string) string {
 	url := "https://rpmfind.net/linux/rpm2html/search.php?query=%s&submit=Search+...&system=%s&arch=%s"
 	req := fmt.Sprintf(url, rpmnName, os_arg, arch)
 	return req
 }
 
-func GetDescUrl(url string) string {
+// GetPrefixURL get site url
+func (parser RpmFind) GetPrefixURL() string {
+	return "https://rpmfind.net/"
+}
+
+// GetDescUrl get description for package
+func (parser RpmFind) GetDescUrl(url string) string {
 	result := ""
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
@@ -38,7 +48,7 @@ func GetDescUrl(url string) string {
 	return result
 }
 
-func GetTextByCategory(doc *goquery.Document, category string) string {
+func getTextByCategory(doc *goquery.Document, category string) string {
 	result := ""
 	doc.Find("h3").Each(func(_ int, selection *goquery.Selection) {
 		text := selection.Text()
@@ -50,15 +60,18 @@ func GetTextByCategory(doc *goquery.Document, category string) string {
 	return result
 }
 
-func GetLicenseFromRpm(doc *goquery.Document) string {
-	return GetTextByCategory(doc, "License")
+// GetLicenseFromRpm is a method to get license info
+func (parser RpmFind) GetLicenseFromRpm(doc *goquery.Document) string {
+	return getTextByCategory(doc, "License")
 }
 
-func GetObjectsFromRpm(doc *goquery.Document) string {
-	return GetTextByCategory(doc, "Files")
+// GetObjectsFromRpm get list of files from rpm
+func (parser RpmFind) GetObjectsFromRpm(doc *goquery.Document) string {
+	return getTextByCategory(doc, "Files")
 }
 
-func GetHomepage(doc *goquery.Document) string {
+// GetHomepage get homepage of the project
+func (parser RpmFind) GetHomepage(doc *goquery.Document) string {
 	result := ""
 	doc.Find("td").Each(func(_ int, selection *goquery.Selection) {
 		text := selection.Text()

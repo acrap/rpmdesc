@@ -7,8 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/acrap/rpmdesc/src/rpmdesc"
+
+	"github.com/PuerkitoBio/goquery"
 	"github.com/urfave/cli"
 )
 
@@ -80,33 +81,34 @@ func main() {
 		return
 	}
 
-	res := local.GetSearchUrl(rpmName, os_arg, arch)
-	descUrl := local.GetDescUrl(res)
-	if len(descUrl) == 0 {
+	var parser local.Parser = local.RpmFind{}
+	res := parser.GetSearchUrl(rpmName, os_arg, arch)
+	descURL := parser.GetDescUrl(res)
+	if len(descURL) == 0 {
 		log.Fatal("No rpm's found")
 		return
 	}
 
 	if !noFileListOutput || noFoundPacketName {
-		fmt.Println("Found packet:", descUrl[strings.LastIndex(descUrl, "/")+1:strings.LastIndex(descUrl, ".")])
+		fmt.Println("Found packet:", descURL[strings.LastIndex(descURL, "/")+1:strings.LastIndex(descURL, ".")])
 	}
 
-	doc, err := goquery.NewDocument("https://rpmfind.net/" + descUrl)
+	doc, err := goquery.NewDocument(parser.GetPrefixURL() + descURL)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if homepageOutput {
-		fmt.Println(local.GetHomepage(doc))
+		fmt.Println(parser.GetHomepage(doc))
 	}
 
 	if !noFileListOutput {
-		fmt.Println(local.GetObjectsFromRpm(doc))
+		fmt.Println(parser.GetObjectsFromRpm(doc))
 	}
 
 	if licenseOutput {
-		fmt.Print("License: ", local.GetLicenseFromRpm(doc))
+		fmt.Print("License: ", parser.GetLicenseFromRpm(doc))
 	}
 
 }
