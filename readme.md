@@ -1,4 +1,7 @@
 # rpmdesc
+![license](https://img.shields.io/github/license/acrap/rpmdesc)
+![release](https://img.shields.io/github/release/acrap/rpmdesc)
+
 Tool to get information about rpm packet by name (os and architecture are optional)
 
 ## Description
